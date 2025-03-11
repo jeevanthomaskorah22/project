@@ -4,7 +4,7 @@ pipeline {
     environment {
         IMAGE_NAME = "hello-python"
         IMAGE_TAG = "v1.0"  // Change this for versioning
-        DOCKER_REGISTRY = "ftp://127.0.0.1/FTPFiles"
+        DOCKER_REGISTRY = "ftp://192.168.1.100/FTPFiles"
         FTP_USERNAME = "victus"
         FTP_PASSWORD = "8386"
     }
@@ -38,7 +38,7 @@ pipeline {
             steps {
                 echo 'Uploading Docker image to FTP...'
                 bat '''
-                curl -T hello-world.tar --user ftpuser:victus ftp://127.0.0.1/hello-python.tar
+                curl -T hello-world.tar --user ftpuser:victus ftp://192.168.1.100/hello-python.tar
                 '''
             }
         }
