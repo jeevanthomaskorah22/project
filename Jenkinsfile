@@ -4,7 +4,7 @@ pipeline {
     environment {
         IMAGE_NAME = "hello-world"
         IMAGE_TAG = "v1.0"  // Change this for versioning
-        DOCKER_REGISTRY = "ftp://127.0.0.1/"
+        DOCKER_REGISTRY = "ftp://127.0.0.1/FTPFiles"
         FTP_USERNAME = "victus"
         FTP_PASSWORD = "8386"
     }
