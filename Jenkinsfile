@@ -1,41 +1,45 @@
 pipeline {
-    agent any
+    agent any  // Runs on any available Jenkins agent
+
+    environment {
+        IMAGE_NAME = "hello-world"
+        IMAGE_TAG = "v1.0"  // Change this for versioning
+        DOCKER_REGISTRY = "ftp://127.0.0.1/"
+        FTP_USERNAME = "victus"
+        FTP_PASSWORD = "8386"
+    }
 
     stages {
         stage('Git Pull') {
             steps {
+                echo 'Pulling latest code from GitHub...'
                 git branch: 'main', url: 'https://github.com/jeevanthomaskorah22/project.git'
             }
         }
 
-        stage('Install Dependencies') {
+        stage('Build') {
             steps {
-                sh 'pip install -r requirements.txt'
+                echo 'Building the Hello World project...'
+                bat 'echo Hello, Jenkins! > hello-world.txt'  // Windows batch command
             }
         }
 
-        stage('Run Tests') {
+        stage('Generate Docker Image') {
             steps {
-                sh 'python -m unittest discover -s tests'
+                echo 'Building Docker image...'
+                bat '''
+                docker build -t %IMAGE_NAME%:%IMAGE_TAG% .
+                docker save -o %IMAGE_NAME%.tar %IMAGE_NAME%:%IMAGE_TAG%
+                '''
             }
         }
 
-        stage('Build Docker Image') {
+        stage('Publish to FTP') {
             steps {
-                sh 'docker build -t python-flask-app .'
-            }
-        }
-
-        stage('Save & Upload Docker Image to FTP') {
-            steps {
-                sh 'docker save python-flask-app > python-flask-app.tar'
-                sh 'curl -T python-flask-app.tar ftp://your-ftp-server --user user:password'
-            }
-        }
-
-        stage('Run Application') {
-            steps {
-                sh 'docker run -d -p 5000:5000 python-flask-app'
+                echo 'Uploading Docker image to FTP...'
+                bat '''
+                curl -T hello-world.tar --user ftpuser:Eldho ftp://127.0.0.1/hello-world.tar
+                '''
             }
         }
     }
